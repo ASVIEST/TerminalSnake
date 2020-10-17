@@ -68,13 +68,21 @@ def update_screen(width, height, snake, fruits, direction):
         if check_food(snake, apple):
             enlarge_snake(snake, direction)
             break
-
-
+    print(f'\033[{height + 2}A' + field_to_text(width, height, snake, fruits))
 
 
 width = 60
 height = 20
 
-fruits = [create_apple(width, height)]
+fruits = []
 snake = create_snake(width, height)
-print(field_to_text(width, height, snake, fruits))
+create_apple(width, height, fruits, snake)
+direction = 0
+print('\n' * (height + 2))
+
+while True:
+    c = time.time()
+    if c - p < 0.1:
+        time.sleep(0.1 - (c - p))
+    p = time.time()
+    update_screen(width, height, snake, fruits, direction)
