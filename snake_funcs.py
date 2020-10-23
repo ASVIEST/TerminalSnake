@@ -82,6 +82,15 @@ def update_screen(width, height, snake, fruits, direction):
 width = 60
 height = 20
 
+directions_codes = {
+    97:(-1, 0),
+    100:(1, 0),
+    119:(0, -1),
+    115:(0, 1),
+
+}
+
+developer_mode = False
 fruits = []
 snake = create_snake(width, height)
 create_apple(width, height, fruits, snake)
@@ -95,10 +104,21 @@ while True:
     if c - p < 0.1:
         time.sleep(0.1 - (c - p))
     p = time.time()
-    if kb.kbhit():
-        c = kb.getch()
-        if ord(c) == 27: # ESC
+
+    if developer_mode == True:
+        if kb.kbhit():
+            c = kb.getch()
+            if ord(c) == 27: # ESC
+                break
+            direction = directions_codes[ord(c)]
+            if not update_screen(width, height, snake, fruits, direction):
+                break
+    else:
+        if True:
+            if kb.kbhit():
+                c = kb.getch()
+                if ord(c) == 27: # ESC
+                    break
+                direction = directions_codes[ord(c)]
+        if not update_screen(width, height, snake, fruits, direction):
             break
-        print(c)
-    # if not update_screen(width, height, snake, fruits, direction):
-    #     break
