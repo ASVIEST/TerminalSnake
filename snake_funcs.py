@@ -1,33 +1,35 @@
 from random import randint
 import time
+import sys
 
 from kbhit import KBHit
 
 
 def field_to_text(width: int, height: int, snake: list, fruits: list) -> str:
-    '''
+    """
     width: int, height: int,
     snake: [(x, y), (x, y), ...]
     fruits: [(x, y), (x, y), ...]
-    '''
+    """
 
     field = [[' ' for x in range(width)] for y in range(height)]
-    for x, y in snake:
-        field[y][x] = 's'
     for x, y in fruits:
-        field[y][x] = 'o'
+        field[y][x] = '\033[31mo\033[0m'
+    for x, y in snake:
+        field[y][x] = '\033[32ms\033[0m'
 
     return '#' * (width + 2) + '\n' + '\n'.join(
         '#' + ''.join(line) + '#' for line in field
     ) + '\n' + '#' * (width + 2)
 
 
-def move_snake(snake, direction):
-    '''
+def move_snake(snake, direction, enlarge=False):
+    """
     direction = (0, 1)
-    '''
+    """
     head = snake[0]
-    snake.pop()
+    if not enlarge:
+        snake.pop()
     snake.insert(0, (head[0] + direction[0], head[1] + direction[1]))
 
 
@@ -52,7 +54,7 @@ def check_bounds(width, height, snake):
 
 
 def check_self(snake):
-    return False
+    return snake[0] in snake[1:]
 
 
 def game_over():
@@ -63,19 +65,20 @@ def check_food(snake, apple):
     return snake[0] == apple
 
 
-def enlarge_snake(snake, direction, amount=1):
-    pass
-
-
 def update_screen(width, height, snake, fruits, direction):
-    move_snake(snake, direction)
+    enlarge = False
+    for i in range(len(fruits)):
+        apple = fruits[i]
+        if check_food(snake, apple):
+            enlarge = True
+            fruits.pop(i)
+            create_apple(width, height, fruits, snake)
+            break
+    move_snake(snake, direction, enlarge)
     if check_lose(width, height, snake):
         return False
-    for apple in fruits:
-        if check_food(snake, apple):
-            enlarge_snake(snake, direction)
-            break
-    print(f'\033[{height + 2}A' + field_to_text(width, height, snake, fruits))
+    print(f'\033[{height + 3}A' + field_to_text(width, height, snake, fruits))
+    print(f'Your score is {len(snake)}.')
     return True
 
 
@@ -83,42 +86,42 @@ width = 60
 height = 20
 
 directions_codes = {
-    97:(-1, 0),
-    100:(1, 0),
-    119:(0, -1),
-    115:(0, 1),
-
+    97: (-1, 0),
+    100: (1, 0),
+    119: (0, -1),
+    115: (0, 1),
 }
 
-developer_mode = False
+if len(sys.argv) > 1 and sys.argv[1] == 'dev':
+    developer_mode = True
+else:
+    developer_mode = False
+
 fruits = []
 snake = create_snake(width, height)
 create_apple(width, height, fruits, snake)
 direction = (1, 0)
-print('\n' * (height + 2))
+print(field_to_text(width, height, snake, fruits) + '\n')
 
 p = time.time()
 kb = KBHit()
 while True:
     c = time.time()
-    if c - p < 0.1:
-        time.sleep(0.1 - (c - p))
+    time_delta = 0.001 if developer_mode else 0.1
+    if c - p < time_delta:
+        time.sleep(time_delta - (c - p))
     p = time.time()
 
-    if developer_mode == True:
-        if kb.kbhit():
-            c = kb.getch()
-            if ord(c) == 27: # ESC
-                break
+    if kb.kbhit():
+        c = kb.getch()
+        if ord(c) == 27:  # ESC
+            break
+        elif ord(c) in directions_codes:
             direction = directions_codes[ord(c)]
-            if not update_screen(width, height, snake, fruits, direction):
-                break
-    else:
-        if True:
-            if kb.kbhit():
-                c = kb.getch()
-                if ord(c) == 27: # ESC
-                    break
-                direction = directions_codes[ord(c)]
+        elif developer_mode:
+            direction = (0, 0)
+        if not update_screen(width, height, snake, fruits, direction):
+            break
+    elif not developer_mode:
         if not update_screen(width, height, snake, fruits, direction):
             break
