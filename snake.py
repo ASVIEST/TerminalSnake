@@ -1,8 +1,10 @@
-from field import Field
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from field import Field
 
 
 class Snake:
-    def __init__(self, init_x, init_y, field: Field):
+    def __init__(self, init_x, init_y, field: 'Field'):
         self.field = field
         self._elements = [(init_x, init_y)]
         self.symbol = '●'

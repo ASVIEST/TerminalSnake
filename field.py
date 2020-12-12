@@ -1,9 +1,14 @@
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from snake import Snake
+
+
 class Field:
     def __init__(self, width, height):
         self.width = width
         self.height = height
 
-    def to_text(self, snake, awards: list) -> str:
+    def to_text(self, snake: 'Snake', awards: list) -> str:
         """
         width: int, height: int,
         snake: [(x, y), (x, y), ...]
