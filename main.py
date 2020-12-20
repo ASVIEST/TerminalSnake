@@ -6,6 +6,7 @@ from bonus import Bonus
 from field import Field
 from kbhit import KBHit
 from snake import Snake
+from Cursor import hide_cursor, show_cursor
 
 WIDTH = 60
 HEIGHT = 20
@@ -40,10 +41,12 @@ def game_over():
 
 
 def update_screen():
+    global time_delta
     for i in range(len(fruits)):
         apple = fruits[i]
         if snake.check_bonus(apple):
             fruits[i] = create_apple()
+            if not developer_mode: time_delta -= 0.001
             break
     snake.move()
     if snake.check_lose():
@@ -60,25 +63,36 @@ fruits.append(create_apple())
 
 print(field.to_text(snake, fruits) + '\n')
 
+time_delta = 0.001 if developer_mode else 0.1
 p = time.time()
 kb = KBHit()
-while True:
-    c = time.time()
-    time_delta = 0.001 if developer_mode else 0.1
-    if c - p < time_delta:
-        time.sleep(time_delta - (c - p))
-    p = time.time()
+hide_cursor()
 
-    if kb.kbhit():
-        c = kb.getch()
-        if ord(c) == 27:  # ESC
-            break
-        elif ord(c) in directions_codes:
-            snake.direction = directions_codes[ord(c)]
-        elif developer_mode:
-            snake.direction = (0, 0)
-        if not update_screen():
-            break
-    elif not developer_mode:
-        if not update_screen():
-            break
+try:
+    while True:
+        c = time.time()
+        if c - p < time_delta:
+            time.sleep(time_delta - (c - p))
+        p = time.time()
+    
+        if kb.kbhit():
+            c = kb.getch()
+            if ord(c) == 27:
+              # ESC
+              break
+            elif ord(c) in directions_codes:
+                snake.direction = directions_codes[ord(c)]
+            elif developer_mode:
+                snake.direction = (0, 0)
+            if not update_screen():
+                break
+        elif not developer_mode:
+            if not update_screen():
+                break
+
+    show_cursor()
+
+
+except KeyboardInterrupt: #except KeyboardInterrupt
+    show_cursor()
+    raise
