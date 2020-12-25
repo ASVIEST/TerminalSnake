@@ -14,8 +14,8 @@ HEIGHT = 20
 directions_codes = {
     97: (-1, 0),
     100: (1, 0),
-    119: (0, -0.5),
-    115: (0, 0.5),
+    119: (0, -1),
+    115: (0, 1),
 }
 
 if len(sys.argv) > 1 and sys.argv[1] == 'dev':
@@ -46,7 +46,8 @@ def update_screen():
         apple = fruits[i]
         if snake.check_bonus(apple):
             fruits[i] = create_apple()
-            if not developer_mode: time_delta -= 0.001
+            if not developer_mode:
+                time_delta *= 0.9
             break
     snake.move()
     if snake.check_lose():
@@ -72,7 +73,8 @@ try:
     while True:
         c = time.time()
         if c - p < time_delta:
-            time.sleep(time_delta - (c - p))
+            pause = time_delta - (c - p)
+            time.sleep(pause if snake.direction[1] == 0 else pause * 2)
         p = time.time()
     
         if kb.kbhit():
@@ -90,9 +92,5 @@ try:
             if not update_screen():
                 break
 
+finally:  # except KeyboardInterrupt
     show_cursor()
-
-
-except KeyboardInterrupt: #except KeyboardInterrupt
-    show_cursor()
-    raise
