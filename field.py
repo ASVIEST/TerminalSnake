@@ -9,7 +9,12 @@ class Field:
         self.height = height
         self.bg_color = '' #'46'
         self.edges_color = '' #'35'
-        self.edges = [f'\033[{self.edges_color}m┌\033[0m\033[{self.bg_color}m', f'\033[{self.edges_color}m┐\033[0m\033[{self.bg_color}m', f'\033[{self.edges_color}m└\033[0m\033[{self.bg_color}m', f'\033[{self.edges_color}m┘\033[0m\033[{self.bg_color}m']
+        self.edges = [
+            f'\033[{self.edges_color}m┌\033[0m\033[{self.bg_color}m',
+            f'\033[{self.edges_color}m┐\033[0m\033[{self.bg_color}m',
+            f'\033[{self.edges_color}m└\033[0m\033[{self.bg_color}m',
+            f'\033[{self.edges_color}m┘\033[0m\033[{self.bg_color}m'
+        ]
 
     def to_text(self, snake: 'Snake', awards: list) -> str:
         """
