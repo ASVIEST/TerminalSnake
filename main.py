@@ -5,6 +5,7 @@ import sys
 from bonus import Bonus
 from field import Field
 from kbhit import KBHit
+from kbthread import keys
 from snake import Snake
 from Cursor import hide_cursor, show_cursor
 
@@ -16,6 +17,14 @@ directions_codes = {
     100: (1, 0),
     119: (0, -1),
     115: (0, 1),
+    ('s',): (0, 1),
+    ('S',): (0, 1),
+    ('W',): (0, -1),
+    ('w',): (0, -1),
+    ('A',): (1, 0),
+    ('a',): (1, 0),
+    ('D',): (-1, 0),
+    ('D',): (-1, 0)
 }
 
 if len(sys.argv) > 1 and sys.argv[1] == 'dev':
@@ -77,13 +86,15 @@ try:
             time.sleep(pause if snake.direction[1] == 0 else pause * 2)
         p = time.time()
     
-        if kb.kbhit():
-            c = kb.getch()
-            if ord(c) == 27:
+        if keys:
+            if keys == ['\033'] or keys == ['\\x1b']:
+                break
+
+            #if ord(c) == 27:
               # ESC
-              break
-            elif ord(c) in directions_codes:
-                snake.direction = directions_codes[ord(c)]
+            elif tuple(keys) in directions_codes:
+                snake.direction = directions_codes[tuple(keys)]
+                #print(tuple(keys))
             elif developer_mode:
                 snake.direction = (0, 0)
             if not update_screen():
