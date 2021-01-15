@@ -38,8 +38,8 @@ def kb():
             if len(keys) > 1 and keys[0] == b'\xe0':
                 keys.pop(0)
                 keys[0] = codes[keys[0]]
-            elif len(keys) == 1:
-                keys[0] = keys[0].decode('cp-1251')
+            elif len(keys) == 1 and keys[0] != b'\xe0':
+                keys[0] = keys[0].decode('cp1251')
         else:
             key = sys.stdin.read(1)
             keys.append(key)
