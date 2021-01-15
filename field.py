@@ -32,6 +32,20 @@ class Field:
         for x, y in snake:
             field[int(y)][int(x)] = f'\033[32m{snake.symbol}\033[0m\033[{self.bg_color}m'
 
-        return f'\033[{self.edges_color}m\033[{self.bg_color}m' + self.edges[0] + self.get_colored_symbol('─') * (self.width) + self.edges[1] + '\n' + '\n'.join(
-            self.get_colored_symbol('│\033[0m') + ''.join(line) + self.get_colored_symbol('│\033[0m') for line in field
-        ) + '\n' +self.edges[2] + self.get_colored_symbol('─') * (self.width) + self.edges[3] + '\033[0m'
+        return (
+            f'\033[{self.edges_color}m\033[{self.bg_color}m' +
+            self.edges[0] +
+            self.get_colored_symbol('─') * (self.width) +
+            self.edges[1] +
+            f'\033[0m\n\033[{self.bg_color}m' +
+            f'\033[0m\n\033[{self.bg_color}m'.join(
+                self.get_colored_symbol('│\033[0m') +
+                ''.join(line) +
+                self.get_colored_symbol('│\033[0m') for line in field
+            ) +
+            f'\033[0m\n\033[{self.bg_color}m' +
+            self.edges[2] +
+            self.get_colored_symbol('─') * (self.width) +
+            self.edges[3] +
+            '\033[0m'
+        )

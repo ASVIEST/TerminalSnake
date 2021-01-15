@@ -4,7 +4,7 @@ import sys
 
 from bonus import Bonus
 from field import Field
-from kbhit import KBHit
+# from kbhit import KBHit
 from kbthread import keys
 from snake import Snake
 from Cursor import hide_cursor, show_cursor
@@ -13,18 +13,14 @@ WIDTH = 60
 HEIGHT = 20
 
 directions_codes = {
-    97: (-1, 0),
-    100: (1, 0),
-    119: (0, -1),
-    115: (0, 1),
-    ('s',): (0, 1),
-    ('S',): (0, 1),
-    ('W',): (0, -1),
-    ('w',): (0, -1),
-    ('A',): (1, 0),
-    ('a',): (1, 0),
-    ('D',): (-1, 0),
-    ('D',): (-1, 0)
+    'left': (-1, 0),
+    'right': (1, 0),
+    'up': (0, -1),
+    'down': (0, 1),
+    's': (0, 1),
+    'w': (0, -1),
+    'a': (-1, 0),
+    'd': (1, 0),
 }
 
 if len(sys.argv) > 1 and sys.argv[1] == 'dev':
@@ -75,7 +71,6 @@ print(field.to_text(snake, fruits) + '\n')
 
 time_delta = 0.001 if developer_mode else 0.1
 p = time.time()
-kb = KBHit()
 hide_cursor()
 
 try:
@@ -85,15 +80,13 @@ try:
             pause = time_delta - (c - p)
             time.sleep(pause if snake.direction[1] == 0 else pause * 2)
         p = time.time()
-    
-        if keys:
-            if keys == ['\033'] or keys == ['\\x1b']:
-                break
 
-            #if ord(c) == 27:
-              # ESC
-            elif tuple(keys) in directions_codes:
-                snake.direction = directions_codes[tuple(keys)]
+        if keys:
+            key = keys.pop().lower()
+            if key == '\033':
+                break
+            elif key in directions_codes:
+                snake.direction = directions_codes[key]
                 #print(tuple(keys))
             elif developer_mode:
                 snake.direction = (0, 0)

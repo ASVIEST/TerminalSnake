@@ -16,12 +16,11 @@ keys = []
 def kb():
     if os.name == 'nt':
         codes = {
-            '\x48': 'up',
-            '\x50': 'down',
-            '\x4d': 'right',
-            '\x4b': 'left'
+            b'\x48': 'up',
+            b'\x50': 'down',
+            b'\x4d': 'right',
+            b'\x4b': 'left'
         }
-        72, 77, 80, 75
     else:
         codes = {
             'A': 'up',
@@ -32,8 +31,6 @@ def kb():
     while True:
         if os.name == 'nt':
             key = msvcrt.getch()
-            # key = repr(key)[2:-1]
-            #print(key)
             keys.append(key)
             if len(keys) > 1 and keys[0] == b'\xe0':
                 keys.pop(0)
