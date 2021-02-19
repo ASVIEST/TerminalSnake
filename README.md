@@ -1,2 +1,2 @@
 # TerminalSnake
-<span style="color:blue">some * Snake in your terminal.* text</span>
+<span style="color:blue">Snake in your terminal.</span>
